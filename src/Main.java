@@ -3,6 +3,7 @@ public class Main {
     private final String[] allowedParameters = {"-n", "-i", "-t"};
     private final String type = "-t";
     private final String usernameInput = "-n";
+    private final String userIDInput = "-i";
     private final String[] allowedTypes = {"prevUsernames", "getUserID", "userInfo"};
     private String username;
     private String userID;
@@ -11,10 +12,12 @@ public class Main {
     public static void main(String[] args) {
        
 
-        // if (args[i - 1].equals("-n")) {
-                     //   String[] argumentInput = {args[i - 1], args[i]}; //argument + the parameter
-                       // executeArgument(argumentInput);
-                   // }
+        
+    Main program = new Main();
+    program.validateSyntax(args);
+    program.setUsernameFirst(args);
+    program.setUserIDFirst(args);
+    program.setType(args);
 
     }
 
@@ -96,13 +99,39 @@ public class Main {
 
     public void getUserIDByUsername() {
         urlToApi = "https://users.roblox.com/v1/usernames/users";
-        Integer foundUserID = UserIDbyUsername.getUserId(username, urlToApi);
+        UserIDbyUsername apiFetch = new UserIDbyUsername();
+        Integer foundUserID = apiFetch.getUserId(username, urlToApi);
 
         System.out.printf("UserID for %s: %d", username, foundUserID);
     }
 
     public void getAllUsernames() {
 
+    }
+
+    public void setUsernameFirst(String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals(usernameInput)) {
+                String[] argumentInput = {args[i], args[i + 1]};
+                executeArgument(argumentInput);
+            }
+        }
+    }
+    public void setUserIDFirst(String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals(userIDInput)) {
+                String[] argumentInput = {args[i], args[i + 1]};
+                executeArgument(argumentInput);
+            }
+        }
+    }
+    public void setType(String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals(type)) {
+                String[] argumentInput = {args[i], args[i + 1]};
+                executeArgument(argumentInput);
+            }
+        }
     }
 
     public void printHelp() {
