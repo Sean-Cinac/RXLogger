@@ -1,10 +1,11 @@
 public class Main {
 
-    private final String[] allowedParameters = {"-n", "-t"};
+    private final String[] allowedParameters = {"-n", "-i", "-t"};
     private final String type = "-t";
     private final String usernameInput = "-n";
-    private final String[] allowedTypes = {"prevusernames"};
+    private final String[] allowedTypes = {"prevUsernames", "getUserID", "userInfo"};
     private String username;
+    private String userID;
     private String urlToApi;
 
     public static void main(String[] args) {
@@ -70,16 +71,34 @@ public class Main {
             case "-n": //username
                 setUsername(argument[1]);
                 break;
+            case "-i":
+                setUserID(argument[1]);
+                break;
             case "-t": //type
                 switch(argument[1]) {
                     case "prevusernames":
                         getAllUsernames();
+                        break;
+                    case "getUserID":
+                        getUserIDByUsername();
+                        break;
                 }
+            
         }
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public void getUserIDByUsername() {
+        urlToApi = "https://users.roblox.com/v1/usernames/users";
+        Integer foundUserID = UserIDbyUsername.getUserId(username, urlToApi);
+
+        System.out.printf("UserID for %s: %d", username, foundUserID);
     }
 
     public void getAllUsernames() {
