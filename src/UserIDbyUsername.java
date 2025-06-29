@@ -5,7 +5,7 @@ import java.net.http.HttpResponse;
 import com.google.gson.*;
 
 public class UserIDbyUsername {
-    public static Integer getUserId(String username, String url) {
+    public static String getUserId(String username, String url) {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
@@ -31,7 +31,7 @@ public class UserIDbyUsername {
 
             if (data.size() > 0) {
                 JsonObject user = data.get(0).getAsJsonObject();
-                return user.get("id").getAsInt();
+                return user.get("id").getAsString();
             } else {
                 System.out.println("User not found.");
                 return null;

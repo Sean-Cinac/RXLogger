@@ -100,9 +100,10 @@ public class Main {
     public void getUserIDByUsername() {
         urlToApi = "https://users.roblox.com/v1/usernames/users";
         UserIDbyUsername apiFetch = new UserIDbyUsername();
-        Integer foundUserID = apiFetch.getUserId(username, urlToApi);
+        String foundUserID = apiFetch.getUserId(username, urlToApi);
 
-        System.out.printf("UserID for %s: %d", username, foundUserID);
+        System.out.printf("UserID for %s: %s%n", this.username, foundUserID);
+
     }
 
     public void getAllUsernames() {
