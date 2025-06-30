@@ -12,6 +12,10 @@ public class Main {
     public static void main(String[] args) {
         Main program = new Main();
 
+        if (args[0].equals("--help") || args == null) {
+            program.printHelp();    
+        }
+    
         if (program.validateSyntax(args) && program.validateSyntaxCombination(args)) { //if syntax is correct
             if (program.checkForElement(args, program.getUseridinput())) {
                 program.setElement(args, program.getUseridinput()); //set the userID insead of the username if given
@@ -74,7 +78,7 @@ public class Main {
     }
 
     public boolean validateSyntaxCombination(String[] arg) {
-        
+
         return false;
     }
 
@@ -156,6 +160,23 @@ public class Main {
     }
 
     public void printHelp() {
-
+        System.out.println("\n=== RXLogger Help ===");
+        System.out.println("Usage: java Main [option] [value] [option] [value]");
+        System.out.println("Options:");
+        System.out.println("  -n <username>       Specify the username to use.");
+        System.out.println("  -i <userID>         Specify the user ID to use (overrides username).");
+        System.out.println("  -t <type>           Specify the action to perform. Allowed types:");
+        System.out.println("                        prevUsernames - Retrieve previous usernames");
+        System.out.println("                        getUserID     - Get user ID from username");
+        System.out.println("                        userInfo      - Fetch user information");
+        System.out.println();
+        System.out.println("Examples:");
+        System.out.println("-n coolUser123 -t getUserID");
+        System.out.println("-i 123456 -t prevUsernames");
+        System.out.println();
+        System.out.println("Note:");
+        System.out.println("  - Either -n (username) or -i (user ID) must be specified.");
+        System.out.println("  - Only two arguments (option + value) allowed.");
+        System.out.println("=======================\n");
     }
 }
