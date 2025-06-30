@@ -10,20 +10,41 @@ public class Main {
     private String urlToApi;
 
     public static void main(String[] args) {
-       
+        Main program = new Main();
 
-        
-    Main program = new Main();
-    program.validateSyntax(args);
-    program.setUsernameFirst(args);
-    program.setUserIDFirst(args);
-    program.setType(args);
+        if (program.validateSyntax(args) && program.validateSyntaxCombination(args)) { //if syntax is correct
+            if (program.checkForElement(args, program.getUseridinput())) {
+                program.setElement(args, program.getUseridinput()); //set the userID insead of the username if given
+            } else {
+                program.setElement(args, program.getUseridinput());
+            }
+            program.setElement(args, program.getType()); //set and execute the type delivered
 
+        }
+    }
+
+    public String getUseridinput() {
+        return userIDInput;
+    }
+    public String getUsernameInput() {
+        return usernameInput;
+    }
+    public String[] getAllowedTypes() {
+        return allowedTypes;
+    }
+    public String getType() {
+        return type;
     }
 
     public boolean validateSyntax(String[] args) { //checking if the user is starting the program with the correct options
         boolean parameterMode = false;
+        int argumentCount = 0;
         for (int i = 0; i < args.length; i++) {
+            if (argumentCount > 2) {
+                System.out.println("Used too many arguments, only two allowed (Usernamer/ID + type)");
+                printHelp();
+                return false;
+            }
             if (!checkIfSyntaxExists(args[0])) { //first input has to be valid argument
                 printHelp();
                 return false;
@@ -44,11 +65,17 @@ public class Main {
                 }
             }
             else if (checkIfSyntaxExists(args[i])) {
+                argumentCount++; //only two should be allowed
                 parameterMode = true; //next input should be a parameter for the argument
             }
 
         }
         return true;
+    }
+
+    public boolean validateSyntaxCombination(String[] arg) {
+        
+        return false;
     }
 
     public boolean checkIfSyntaxExists(String syntaxStatement) {
@@ -110,25 +137,18 @@ public class Main {
 
     }
 
-    public void setUsernameFirst(String[] args) {
+    public boolean checkForElement(String[] args, String element) {
         for (int i = 0; i < args.length; i++) {
-            if (args[i].equals(usernameInput)) {
-                String[] argumentInput = {args[i], args[i + 1]};
-                executeArgument(argumentInput);
+            if (args[i].equals(element)) {
+                return true;
             }
         }
+        return false;
     }
-    public void setUserIDFirst(String[] args) {
+
+    public void setElement(String[] args, String element) {
         for (int i = 0; i < args.length; i++) {
-            if (args[i].equals(userIDInput)) {
-                String[] argumentInput = {args[i], args[i + 1]};
-                executeArgument(argumentInput);
-            }
-        }
-    }
-    public void setType(String[] args) {
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].equals(type)) {
+            if (args[i].equals(element)) {
                 String[] argumentInput = {args[i], args[i + 1]};
                 executeArgument(argumentInput);
             }
