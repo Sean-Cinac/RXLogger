@@ -1,3 +1,7 @@
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 public class Main {
 
     private final String[] allowedParameters = {"-n", "-i", "-t"};
@@ -14,16 +18,17 @@ public class Main {
 
         if (args[0].equals("--help") || args == null) {
             program.printHelp();    
-        }
-    
-        if (program.validateSyntax(args) && program.validateSyntaxCombination(args)) { //if syntax is correct
-            if (program.checkForElement(args, program.getUseridinput())) {
-                program.setElement(args, program.getUseridinput()); //set the userID insead of the username if given
-            } else {
-                program.setElement(args, program.getUseridinput());
-            }
-            program.setElement(args, program.getType()); //set and execute the type delivered
+        } else {
+            // && program.validateSyntaxCombination(args)
+            if (program.validateSyntax(args)) { //if syntax is correct
+                if (program.checkForElement(args, program.getUseridinput())) {
+                    program.setElement(args, program.getUseridinput()); //set the userID insead of the username if given
+                } else {
+                    program.setElement(args, program.getUsernameInput());
+                }
+                program.setElement(args, program.getType()); //set and execute the type delivered
 
+            }
         }
     }
 
@@ -63,6 +68,7 @@ public class Main {
                    if (args[i - 1].equals(type)) {
                         if (!validateType(args[i])) {
                             System.out.println("Wrong Type entered");
+                            printHelp();
                             return false;
                         }
                    }
@@ -110,11 +116,12 @@ public class Main {
                 break;
             case "-t": //type
                 switch(argument[1]) {
-                    case "prevusernames":
+                    case "prevUsernames":
                         getAllUsernames();
                         break;
                     case "getUserID":
-                        getUserIDByUsername();
+                        String foundUserID = getUserIDByUsername();
+                        System.out.printf("UserID for %s: %s%n", this.username, foundUserID);
                         break;
                 }
             
@@ -128,17 +135,43 @@ public class Main {
         this.userID = userID;
     }
 
-    public void getUserIDByUsername() {
+    public String getUserIDByUsername() {
         urlToApi = "https://users.roblox.com/v1/usernames/users";
         UserIDbyUsername apiFetch = new UserIDbyUsername();
-        String foundUserID = apiFetch.getUserId(username, urlToApi);
+        return apiFetch.getUserId(this.username, urlToApi);
 
-        System.out.printf("UserID for %s: %s%n", this.username, foundUserID);
 
     }
 
     public void getAllUsernames() {
+        if (this.userID == null) {
+            if (this.username != null) {
+                this.userID = getUserIDByUsername();
+            }
+        } //UserID required
 
+        urlToApi = String.format("https://users.roblox.com/v1/users/%s/username-history", this.userID);
+        PrevUsernames apiConnection = new PrevUsernames();
+        JsonObject response = apiConnection.getData(userID, urlToApi);
+        
+
+        if (response == null || !response.has("data")) {
+        System.out.println("No username history found.");
+        return;
+        }
+
+        JsonArray history = response.getAsJsonArray("data");
+        if (history.size() == 0) {
+            System.out.println("No previous usernames found.");
+            return;
+        }
+
+        System.out.println("Previous usernames for userID " + this.userID + ":");
+        for (JsonElement element : history) {
+            JsonObject entry = element.getAsJsonObject();
+            String previousName = entry.get("name").getAsString();
+            System.out.println("- " + previousName);
+        }
     }
 
     public boolean checkForElement(String[] args, String element) {
