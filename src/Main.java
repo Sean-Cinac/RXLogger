@@ -116,6 +116,9 @@ public class Main {
                 break;
             case "-t": //type
                 switch(argument[1]) {
+                    case "userInfo":
+                        getUserInfo();
+                        break;
                     case "prevUsernames":
                         getAllUsernames();
                         break;
@@ -135,6 +138,23 @@ public class Main {
         this.userID = userID;
     }
 
+    public void getUserInfo() {
+        if (this.userID == null) {
+            if (this.username != null) {
+                this.userID = getUserIDByUsername();
+            }
+        } //UserID required
+
+        JsonObject userDetails = UserInfo.getUserDetails(this.userID);
+        if (userDetails != null) {
+            System.out.printf("Display Name: %s\n", userDetails.get("displayName").getAsString());
+            System.out.printf("Username: %s\n", userDetails.get("name").getAsString());
+            System.out.printf("User Description: %s\n", userDetails.get("description").getAsString());
+            System.out.printf("Account Created: %s\n", userDetails.get("created").getAsString());
+            System.out.printf("Verified Badge: %s\n", userDetails.get("hasVerifiedBadge").getAsBoolean());
+        }
+    }
+
     public String getUserIDByUsername() {
         urlToApi = "https://users.roblox.com/v1/usernames/users";
         UserIDbyUsername apiFetch = new UserIDbyUsername();
@@ -150,7 +170,7 @@ public class Main {
             }
         } //UserID required
 
-        urlToApi = String.format("https://users.roblox.com/v1/users/%s/username-history", this.userID);
+        urlToApi = String.format("https://users.roblox.com/v1/users/%s/username-history?limit=10&sortOrder=Asc", this.userID);
         PrevUsernames apiConnection = new PrevUsernames();
         JsonObject response = apiConnection.getData(userID, urlToApi);
         
