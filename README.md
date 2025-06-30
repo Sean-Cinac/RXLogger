@@ -2,6 +2,7 @@
 A way to fetch public information of Roblox users, the easy way!
 
 To execute the program use the sh script, simply type in "./run.sh {arguments}"
+For windows, do the same thing just on the run.bat script
 
 valid arguments:
 
